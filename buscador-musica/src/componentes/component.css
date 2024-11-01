@@ -1,0 +1,37 @@
+body {
+    background-color: #343a40; /* Fondo oscuro */
+    color: white; /* Color de texto claro */
+}
+
+.table {
+    background-color: #495057; /* Color de fondo de la tabla */
+    color: white; /* Color de texto en la tabla */
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #6c757d; /* Color de fondo para filas impares */
+}
+
+.table-striped tbody tr:nth-of-type(even) {
+    background-color: #495057; /* Color de fondo para filas pares */
+}
+
+.btn {
+    margin: 0 5px; /* Espaciado entre botones */
+}
+
+input {
+    background-color: #495057; /* Color de fondo del input */
+    color: white; /* Color de texto del input */
+    border: 1px solid #6c757d; /* Bordes del input */
+}
+
+input:focus {
+    background-color: #6c757d; /* Color de fondo en foco */
+    color: white; /* Color de texto en foco */
+    border-color: #ffc107; /* Color del borde en foco */
+}
+
+h1 {
+    color: #ffc107; /* Color de encabezado */
+}

@@ -1,38 +1,37 @@
-.App {
-  text-align: center;
+body {
+  background-color: #343a40; /* Fondo oscuro */
+  color: white; /* Color de texto claro */
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.table {
+  background-color: #495057; /* Color de fondo de la tabla */
+  color: white; /* Color de texto en la tabla */
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: #6c757d; /* Color de fondo para filas impares */
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.table-striped tbody tr:nth-of-type(even) {
+  background-color: #495057; /* Color de fondo para filas pares */
 }
 
-.App-link {
-  color: #61dafb;
+.btn {
+  margin: 0 5px; /* Espaciado entre botones */
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+input {
+  background-color: #495057; /* Color de fondo del input */
+  color: white; /* Color de texto del input */
+  border: 1px solid #6c757d; /* Bordes del input */
+}
+
+input:focus {
+  background-color: #6c757d; /* Color de fondo en foco */
+  color: white; /* Color de texto en foco */
+  border-color: #ffc107; /* Color del borde en foco */
+}
+
+h1 {
+  color: #ffc107; /* Color de encabezado */
 }
