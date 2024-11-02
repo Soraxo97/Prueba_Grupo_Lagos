@@ -3,7 +3,7 @@ import SongRow from './SongRow';
 
 const SongTable = ({ songs, favoriteIds, onFavorite }) => {
     return (
-        <table className="table table-striped table-dark"> {/* Añadir clase table-dark */}
+        <table className="table table-dark table-striped">
             <thead>
                 <tr>
                     <th>Nombre Canción</th>
