@@ -6,18 +6,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';  // Importación de estilos de Bo
 import './App.css';  // Importación de estilos personalizados
 
 function App() {
-    // Estado para almacenar las canciones obtenidas en la búsqueda
-    const [songs, setSongs] = useState([]);
-    // Estado para almacenar los IDs de las canciones marcadas como favoritas
-    const [favoriteIds, setFavoriteIds] = useState([]);
-    // Estado para definir el número de elementos por página (por defecto, 5)
-    const [itemsPerPage, setItemsPerPage] = useState(5);
-    // Estado para controlar la página actual de la paginación
-    const [currentPage, setCurrentPage] = useState(1);
-    // Estado para controlar si no hay resultados en la búsqueda
-    const [noResults, setNoResults] = useState(false);
-    // Estado para almacenar los nombres de bandas que devolvieron resultados exitosos
-    const [successfulSearches, setSuccessfulSearches] = useState([]);
+    const [songs, setSongs] = useState([]); // Estado para almacenar las canciones obtenidas en la búsqueda
+    const [favoriteIds, setFavoriteIds] = useState([]); // Estado para almacenar los IDs de las canciones marcadas como favoritas
+    const [itemsPerPage, setItemsPerPage] = useState(5); // Estado para definir el número de elementos por página (por defecto, 5)
+    const [currentPage, setCurrentPage] = useState(1); // Estado para controlar la página actual de la paginación
+    const [noResults, setNoResults] = useState(false); // Estado para controlar si no hay resultados en la búsqueda
+    const [successfulSearches, setSuccessfulSearches] = useState([]); // Estado para almacenar los nombres de bandas que devolvieron resultados exitosos
+    const [currentBand, setCurrentBand] = useState(''); // Nuevo estado para almacenar el nombre de la banda actual
 
     /**
      * Maneja la búsqueda de canciones según el nombre de la banda.
@@ -25,8 +20,8 @@ function App() {
      */
     const handleSearch = async (bandName) => {
         try {
-            // Llama a la función API para buscar canciones por el nombre de la banda
-            const data = await searchTracks(bandName);
+            const data = await searchTracks(bandName); // Llama a la función API para buscar canciones
+            console.log(data); // Muestra los datos en la consola
             setSongs(data.canciones);  // Actualiza el estado con las canciones obtenidas
             setCurrentPage(1);  // Reinicia la paginación a la primera página
 
@@ -39,6 +34,8 @@ function App() {
                 setSuccessfulSearches(prevSearches => (
                     prevSearches.includes(bandName) ? prevSearches : [...prevSearches, bandName]
                 ));
+                // Guarda el nombre de la banda actual
+                setCurrentBand(bandName);
             }
         } catch (error) {
             console.error("Error al obtener canciones:", error);
@@ -52,14 +49,15 @@ function App() {
      */
     const handleFavorite = async (song) => {
         try {
-            // Llama a la función API para marcar o desmarcar una canción como favorita
-            await markAsFavorite(song);
+            const response = await markAsFavorite(song, currentBand); // Llama a la función API y pasa el nombre de la banda
+            console.log("Respuesta de la API:", response); // Imprime la respuesta de la API en la consola
+    
             setFavoriteIds((prev) => {
-                // Verifica si la canción ya está en favoritos y actualiza el estado
                 const isAlreadyFavorite = prev.includes(song.cancion_id);
+                // console.log(`Canción ${isAlreadyFavorite ? 'desmarcada' : 'marcada'} como favorita:`, response);
                 return isAlreadyFavorite
-                    ? prev.filter((id) => id !== song.cancion_id)  // La elimina si ya es favorita
-                    : [...prev, song.cancion_id];  // La añade si no es favorita
+                    ? prev.filter((id) => id !== song.cancion_id) // La elimina si ya es favorita
+                    : [...prev, song.cancion_id]; // La añade si no es favorita
             });
         } catch (error) {
             console.error("Error al marcar/desmarcar como favorita:", error);
