@@ -1,29 +1,41 @@
 import React, { useState } from 'react';
-import SearchBar from './componentes/SearchBar';
-import SongTable from './componentes/SongTable';
-import { searchTracks, markAsFavorite } from './services/api';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css';
+import SearchBar from './componentes/SearchBar';  // Componente de búsqueda
+import SongTable from './componentes/SongTable';  // Componente que muestra la lista de canciones
+import { searchTracks, markAsFavorite } from './services/api';  // Funciones API para buscar y marcar como favorito
+import 'bootstrap/dist/css/bootstrap.min.css';  // Importación de estilos de Bootstrap
+import './App.css';  // Importación de estilos personalizados
 
 function App() {
+    // Estado para almacenar las canciones obtenidas en la búsqueda
     const [songs, setSongs] = useState([]);
+    // Estado para almacenar los IDs de las canciones marcadas como favoritas
     const [favoriteIds, setFavoriteIds] = useState([]);
-    const [itemsPerPage, setItemsPerPage] = useState(5); // Elementos por página
-    const [currentPage, setCurrentPage] = useState(1); // Página actual
-    const [noResults, setNoResults] = useState(false); // Controla si no hay resultados
-    const [successfulSearches, setSuccessfulSearches] = useState([]); // Almacena nombres de bandas con resultados
+    // Estado para definir el número de elementos por página (por defecto, 5)
+    const [itemsPerPage, setItemsPerPage] = useState(5);
+    // Estado para controlar la página actual de la paginación
+    const [currentPage, setCurrentPage] = useState(1);
+    // Estado para controlar si no hay resultados en la búsqueda
+    const [noResults, setNoResults] = useState(false);
+    // Estado para almacenar los nombres de bandas que devolvieron resultados exitosos
+    const [successfulSearches, setSuccessfulSearches] = useState([]);
 
+    /**
+     * Maneja la búsqueda de canciones según el nombre de la banda.
+     * @param {string} bandName - El nombre de la banda a buscar.
+     */
     const handleSearch = async (bandName) => {
         try {
+            // Llama a la función API para buscar canciones por el nombre de la banda
             const data = await searchTracks(bandName);
-            setSongs(data.canciones);
-            setCurrentPage(1); // Resetear a la primera página al buscar
+            setSongs(data.canciones);  // Actualiza el estado con las canciones obtenidas
+            setCurrentPage(1);  // Reinicia la paginación a la primera página
 
+            // Verifica si no hubo resultados
             if (data.canciones.length === 0) {
                 setNoResults(true);
             } else {
                 setNoResults(false);
-                // Agregar el nombre de la banda a successfulSearches si no está ya en la lista
+                // Agrega el nombre de la banda a la lista de búsquedas exitosas si aún no está
                 setSuccessfulSearches(prevSearches => (
                     prevSearches.includes(bandName) ? prevSearches : [...prevSearches, bandName]
                 ));
@@ -34,40 +46,58 @@ function App() {
         }
     };
 
+    /**
+     * Maneja la acción de marcar o desmarcar una canción como favorita.
+     * @param {object} song - La canción a marcar o desmarcar como favorita.
+     */
     const handleFavorite = async (song) => {
         try {
+            // Llama a la función API para marcar o desmarcar una canción como favorita
             await markAsFavorite(song);
             setFavoriteIds((prev) => {
+                // Verifica si la canción ya está en favoritos y actualiza el estado
                 const isAlreadyFavorite = prev.includes(song.cancion_id);
                 return isAlreadyFavorite
-                    ? prev.filter((id) => id !== song.cancion_id)
-                    : [...prev, song.cancion_id];
+                    ? prev.filter((id) => id !== song.cancion_id)  // La elimina si ya es favorita
+                    : [...prev, song.cancion_id];  // La añade si no es favorita
             });
         } catch (error) {
             console.error("Error al marcar/desmarcar como favorita:", error);
         }
     };
 
+    // Cálculo de índices de inicio y fin para los elementos en la página actual
     const indexOfLastSong = currentPage * itemsPerPage;
     const indexOfFirstSong = indexOfLastSong - itemsPerPage;
+    // Canciones que se mostrarán en la página actual
     const currentSongs = songs.slice(indexOfFirstSong, indexOfLastSong);
 
+    /**
+     * Cambia la página actual al número indicado.
+     * @param {number} pageNumber - El número de la página a la cual navegar.
+     */
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
 
+    /**
+     * Cambia el número de elementos a mostrar por página.
+     * @param {number} value - El número de elementos a mostrar.
+     */
     const handleItemsPerPageChange = (value) => {
         setItemsPerPage(value);
-        setCurrentPage(1); // Resetear a la primera página
+        setCurrentPage(1);  // Reinicia la paginación a la primera página
     };
 
-    const totalPages = Math.ceil(songs.length / itemsPerPage); // Total de páginas
+    // Cálculo del número total de páginas
+    const totalPages = Math.ceil(songs.length / itemsPerPage);
 
     return (
         <div className="container">
             <h1>Buscador de Canciones</h1>
             <SearchBar onSearch={handleSearch} />
 
+            {/* Opciones para seleccionar el número de items por página */}
             <div className="mb-3">
                 <label className="form-label">Items por página:</label>
                 <div>
@@ -84,6 +114,7 @@ function App() {
                 </div>
             </div>
 
+            {/* Mensaje si no se encuentran resultados */}
             {noResults ? (
                 <p className="text-danger">Banda no existente</p>
             ) : currentSongs.length > 0 ? (
@@ -94,7 +125,7 @@ function App() {
                 />
             ) : null}
 
-            {/* Mostrar nombres de bandas con resultados exitosos y hacerlos seleccionables */}
+            {/* Listado de bandas que han tenido búsquedas exitosas */}
             <div className="mt-3">
                 <h5>Bandas con resultados:</h5>
                 <div className="d-flex flex-wrap">
@@ -110,6 +141,7 @@ function App() {
                 </div>
             </div>
 
+            {/* Paginación */}
             <nav>
                 <ul className="pagination">
                     {[...Array(totalPages)].map((_, index) => (
