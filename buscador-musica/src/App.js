@@ -21,10 +21,14 @@ function App() {
     const handleSearch = async (bandName) => {
         try {
             const data = await searchTracks(bandName); // Llama a la función API para buscar canciones
-            console.log(data); // Muestra los datos en la consola
-            setSongs(data.canciones);  // Actualiza el estado con las canciones obtenidas
+    
+            // Muestra los datos en la consola en formato JSON
+            console.log("Datos de la API:", JSON.stringify(data, null, 2)); 
+    
+            // Actualiza el estado con las canciones obtenidas
+            setSongs(data.canciones);  
             setCurrentPage(1);  // Reinicia la paginación a la primera página
-
+    
             // Verifica si no hubo resultados
             if (data.canciones.length === 0) {
                 setNoResults(true);
@@ -42,6 +46,7 @@ function App() {
             setNoResults(true);
         }
     };
+    
 
     /**
      * Maneja la acción de marcar o desmarcar una canción como favorita.
